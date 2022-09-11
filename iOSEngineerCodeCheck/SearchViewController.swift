@@ -12,8 +12,7 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
 
     @IBOutlet weak var SearchBar: UISearchBar!
     
-    var repository: [[String: Any]]=[]
-    
+    var items = [Repository.Item]()
     var task: URLSessionTask?
     var word: String!
     var url: String!
@@ -38,45 +37,64 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
-        word = searchBar.text!
+        guard word?.count != 0 else { return }
         
-        if word.count != 0 {
-            url = "https://api.github.com/search/repositories?q=\(word!)"
-            task = URLSession.shared.dataTask(with: URL(string: url)!) { (data, response, error) in
-                if let object = try! JSONSerialization.jsonObject(with: data!) as? [String: Any] {
-                    if let items = object["items"] as? [[String: Any]] {
-                    self.repository = items
-                        DispatchQueue.main.async {
-                            self.tableView.reloadData()
-                        }
-                    }
-                }
-            }
-        // これ呼ばなきゃリストが更新されません
-        task?.resume()
+        let session = URLSession.shared
+        let url = "https://api.github.com/search/repositories?q="
+        word = searchBar.text ?? ""
+        
+        guard let percentEncoding = word?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: url + percentEncoding) else {
+            print("error")
+            return
         }
         
+        task = session.dataTask(with: url) { (data, response, _) in
+            
+            guard let data = data else {
+                print("error")
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let repository = try decoder.decode(Repository.self, from: data)
+                let items = repository.items
+                self.items = items
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            } catch {
+                print(error)
+            }
+            
+        }
+        task?.resume()
+        
     }
+        
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "Detail"{
             let detail = segue.destination as! ResultViewController
-            detail.vc1 = self
+            detail.searchViewController = self
         }
         
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return repository.count
+        return items.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = UITableViewCell()
-        let repository = repository[indexPath.row]
-        cell.textLabel?.text = repository["full_name"] as? String ?? ""
-        cell.detailTextLabel?.text = repository["language"] as? String ?? ""
+        let repository = items[indexPath.row]
+        cell.textLabel?.text = repository.fullName
+        cell.detailTextLabel?.text = repository.language 
         cell.tag = indexPath.row
         return cell
         
