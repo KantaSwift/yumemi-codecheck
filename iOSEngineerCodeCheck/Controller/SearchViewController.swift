@@ -8,20 +8,37 @@
 
 import UIKit
 
-class SearchViewController: UITableViewController, UISearchBarDelegate {
+class SearchViewController: UIViewController, UISearchBarDelegate {
     
-    @IBOutlet weak var SearchBar: UISearchBar!
-    
+    private let searchBar = UISearchBar()
+    private let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        return tableView
+    }()
     var items = [Repository.Item]()
     var task: URLSessionTask?
     var word: String?
-    var index: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        SearchBar.placeholder = "Githubリポジトリの検索"
-        SearchBar.delegate = self
+        searchBar.placeholder = "Githubリポジトリの検索"
+        searchBar.delegate = self
+        tableView.delegate = self
+        tableView.dataSource = self
+        
+        setupViews()
+    }
+    
+    private func setupViews() {
+        
+        view.addSubview(searchBar)
+        view.addSubview(tableView)
+        
+        searchBar.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, right: view.rightAnchor)
+        
+        tableView.anchor(top: searchBar.bottomAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor)
         
     }
     
@@ -70,35 +87,37 @@ class SearchViewController: UITableViewController, UISearchBarDelegate {
     }
     
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        if segue.identifier == "Detail"{
-            let detail = segue.destination as! ResultViewController
-            detail.searchViewController = self
-        }
-        
-    }
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//
+//        if segue.identifier == "Detail"{
+//            let detail = segue.destination as! ResultViewController
+//            detail.searchViewController = self
+//        }
+//
+//    }
+}
+
+extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = UITableViewCell()
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         let repository = items[indexPath.row]
         cell.textLabel?.text = repository.fullName
         cell.detailTextLabel?.text = repository.language
         cell.tag = indexPath.row
         return cell
-        
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    
-        index = indexPath.row
-        performSegue(withIdentifier: "Detail", sender: self)
-        
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        print("タップされました")
+//        index = indexPath.row
+//        print(index)
+        let resultVC = ResultViewController(item: items[indexPath.row])
+     
+        navigationController?.pushViewController(resultVC, animated: true)
     }
-    
 }
