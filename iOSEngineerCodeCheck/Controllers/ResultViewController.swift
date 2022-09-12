@@ -45,6 +45,7 @@ class ResultViewController: UIViewController {
         } else {
             languageLabel.text = "No Language"
         }
+        titleLabel.text = item.fullName
         starsLabel.text = "\(item.stargazersCount) stars"
         watchersLabel.text = "\(item.watchersCount) watchers"
         forksLabel.text = "\(item.forksCount) forks"
@@ -53,6 +54,11 @@ class ResultViewController: UIViewController {
         setImage()
         setupView()
         
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        navigationController?.navigationBar.transform = .identity
     }
     
     private func setupView() {
@@ -64,6 +70,7 @@ class ResultViewController: UIViewController {
         
         let baseStackView = UIStackView(arrangedSubviews: [languageLabel, infoStackView])
         baseStackView.axis = .horizontal
+        baseStackView.distribution = .fillEqually
         
         let totalStackView = UIStackView(arrangedSubviews: [imageView, titleLabel, baseStackView])
         totalStackView.axis = .vertical
@@ -76,7 +83,7 @@ class ResultViewController: UIViewController {
         baseStackView.anchor(height: 150)
         
 
-        totalStackView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, right: view.rightAnchor)
+        totalStackView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, right: view.rightAnchor, topPadding: 15)
         
     }
     

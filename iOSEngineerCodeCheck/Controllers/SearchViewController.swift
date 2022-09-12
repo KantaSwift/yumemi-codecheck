@@ -23,21 +23,35 @@ class SearchViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        searchBar.placeholder = "Githubリポジトリの検索"
-        searchBar.delegate = self
         tableView.delegate = self
         tableView.dataSource = self
         
         setupViews()
+        setupNavigationBar()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        //        navigationController?.setNavigationBarHidden(true, animated: true)
+    }
+    
+    private func setupNavigationBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.backgroundColor = .systemBackground
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        
+        searchBar.placeholder = "Githubリポジトリの検索"
+        searchBar.delegate = self
+        
+        navigationItem.titleView = searchBar
+        navigationItem.titleView?.frame = searchBar.frame
+    }
+    
     
     private func setupViews() {
         
-        view.addSubview(searchBar)
         view.addSubview(tableView)
         
-        searchBar.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, right: view.rightAnchor)
-        tableView.anchor(top: searchBar.bottomAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor)
+        tableView.anchor(top: view.topAnchor, bottom: view.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor)
         
     }
     
@@ -91,5 +105,11 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
         let resultVC = ResultViewController(item: items[indexPath.row])
         navigationController?.pushViewController(resultVC, animated: true)
         
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let defaultOffset = view.safeAreaInsets.top
+        let offset = scrollView.contentOffset.y + defaultOffset
+        navigationController?.navigationBar.transform = .init(translationX: 0, y: min(0, -offset))
     }
 }
