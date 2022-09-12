@@ -10,7 +10,11 @@ import UIKit
 
 class ResultViewController: UIViewController {
     
-    private let imageView = UIImageView()
+    private let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
     private let titleLabel = InfoLabel(size: 20, weight: .heavy)
     private let languageLabel = InfoLabel(size: 18, weight: .bold)
     private let starsLabel = InfoLabel(size: 14, weight: .regular)
@@ -23,6 +27,7 @@ class ResultViewController: UIViewController {
         
         self.item = item
         super.init(nibName: nil, bundle: nil)
+        view.backgroundColor = .systemBackground
     }
     
     required init?(coder: NSCoder) {
@@ -52,26 +57,29 @@ class ResultViewController: UIViewController {
         
         let infoStackView = UIStackView(arrangedSubviews: [starsLabel, watchersLabel, forksLabel, issuesLabel])
         infoStackView.axis = .vertical
+        infoStackView.distribution = .fillEqually
+       
         
         let baseStackView = UIStackView(arrangedSubviews: [languageLabel, infoStackView])
         baseStackView.axis = .horizontal
         
-        view.addSubview(imageView)
-        view.addSubview(titleLabel)
-        view.addSubview(baseStackView)
+        let totalStackView = UIStackView(arrangedSubviews: [imageView, titleLabel, baseStackView])
+        totalStackView.axis = .vertical
+        totalStackView.distribution = .fillEqually
+        totalStackView.spacing = 10
         
-        imageView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, right: view.rightAnchor, leftPadding: 20, rightPadding: 20)
+        view.addSubview(totalStackView)
         
-        titleLabel.anchor(top: imageView.bottomAnchor, left: imageView.leftAnchor, right: imageView.rightAnchor, topPadding: 15)
+        imageView.anchor(height: 250)
+        baseStackView.anchor(height: 150)
         
-        baseStackView.anchor(top: titleLabel.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, topPadding: 15)
-        
+
+        totalStackView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, right: view.rightAnchor)
         
     }
     
     func getImage() {
         
-       
         titleLabel.text = item.fullName
         
         let imageURL = item.owner.avatarUrl

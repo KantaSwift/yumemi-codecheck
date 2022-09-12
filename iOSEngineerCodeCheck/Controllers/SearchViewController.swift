@@ -85,16 +85,6 @@ class SearchViewController: UIViewController, UISearchBarDelegate {
         task?.resume()
         
     }
-    
-    
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//
-//        if segue.identifier == "Detail"{
-//            let detail = segue.destination as! ResultViewController
-//            detail.searchViewController = self
-//        }
-//
-//    }
 }
 
 extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
@@ -113,11 +103,9 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        print("タップされました")
-//        index = indexPath.row
-//        print(index)
+//
         let resultVC = ResultViewController(item: items[indexPath.row])
-     
         navigationController?.pushViewController(resultVC, animated: true)
+        
     }
 }
