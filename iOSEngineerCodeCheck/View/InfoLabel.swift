@@ -16,6 +16,7 @@ class InfoLabel: UILabel {
         font = .systemFont(ofSize: size, weight: weight)
         textColor = .textColor
         textAlignment = .center
+        numberOfLines = 0
     }
     
     required init?(coder: NSCoder) {
