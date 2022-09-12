@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B24FC95528CF5311005D3511 /* GithubAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24FC95428CF5311005D3511 /* GithubAPI.swift */; };
+		B24FC95728CF5BEA005D3511 /* ImageGetter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24FC95628CF5BEA005D3511 /* ImageGetter.swift */; };
 		B2502CF628CE475800798E7F /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2502CF528CE475800798E7F /* Repository.swift */; };
 		B2502CF928CE512700798E7F /* InfoLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2502CF828CE512700798E7F /* InfoLabel.swift */; };
 		B2502CFD28CE51F000798E7F /* UIView-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2502CFC28CE51F000798E7F /* UIView-Extension.swift */; };
@@ -39,6 +41,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B24FC95428CF5311005D3511 /* GithubAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GithubAPI.swift; sourceTree = "<group>"; };
+		B24FC95628CF5BEA005D3511 /* ImageGetter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGetter.swift; sourceTree = "<group>"; };
 		B2502CF528CE475800798E7F /* Repository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
 		B2502CF828CE512700798E7F /* InfoLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoLabel.swift; sourceTree = "<group>"; };
 		B2502CFC28CE51F000798E7F /* UIView-Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView-Extension.swift"; sourceTree = "<group>"; };
@@ -88,6 +92,8 @@
 			isa = PBXGroup;
 			children = (
 				B2502CF528CE475800798E7F /* Repository.swift */,
+				B24FC95428CF5311005D3511 /* GithubAPI.swift */,
+				B24FC95628CF5BEA005D3511 /* ImageGetter.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -306,9 +312,11 @@
 				B2502CFF28CF49A300798E7F /* UIColor-extension.swift in Sources */,
 				BFD945E3244DC5E80012785A /* SearchViewController.swift in Sources */,
 				BF0A658D244F2A3B00280FA6 /* ResultViewController.swift in Sources */,
+				B24FC95728CF5BEA005D3511 /* ImageGetter.swift in Sources */,
 				B2502CFD28CE51F000798E7F /* UIView-Extension.swift in Sources */,
 				B2502CF628CE475800798E7F /* Repository.swift in Sources */,
 				BFD945DF244DC5E80012785A /* AppDelegate.swift in Sources */,
+				B24FC95528CF5311005D3511 /* GithubAPI.swift in Sources */,
 				BFD945E1244DC5E80012785A /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -477,7 +485,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = N4KYPFFB9X;
 				INFOPLIST_FILE = iOSEngineerCodeCheck/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -495,7 +503,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = N4KYPFFB9X;
 				INFOPLIST_FILE = iOSEngineerCodeCheck/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
