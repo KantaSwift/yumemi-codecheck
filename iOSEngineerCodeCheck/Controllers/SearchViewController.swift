@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SearchViewController: UIViewController, UISearchBarDelegate {
+class SearchViewController: UIViewController {
     
     private let searchBar = UISearchBar()
     private let tableView: UITableView = {
@@ -17,8 +17,8 @@ class SearchViewController: UIViewController, UISearchBarDelegate {
         return tableView
     }()
     var items = [Repository.Item]()
-    var task: URLSessionTask?
-    var word: String?
+    private var api = GithubAPI()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,53 +37,37 @@ class SearchViewController: UIViewController, UISearchBarDelegate {
         view.addSubview(tableView)
         
         searchBar.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, right: view.rightAnchor)
-        
         tableView.anchor(top: searchBar.bottomAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor)
         
     }
     
+    
+}
+
+
+extension SearchViewController: UISearchBarDelegate {
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        task?.cancel()
+        api.stopTask()
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
-        guard word?.count != 0 else { return }
+        guard let text = searchBar.text,
+              !text.isEmpty
+        else { return }
         
-        let session = URLSession.shared
-        let url = "https://api.github.com/search/repositories?q="
-        word = searchBar.text ?? ""
-        
-        guard let percentEncoding = word?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-              let url = URL(string: url + percentEncoding) else {
-            print("error")
-            return
-        }
-        
-        task = session.dataTask(with: url) { (data, response, _) in
-            
-            guard let data = data else {
-                print("error")
-                return
-            }
-            
-            do {
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let repository = try decoder.decode(Repository.self, from: data)
-                let items = repository.items
-                self.items = items
-                
+        api.getRepositories(word: text) { [weak self] result in
+            switch result {
+            case .success(let repositories):
+                self?.items = repositories
                 DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                    self?.tableView.reloadData()
                 }
-            } catch {
+            case .failure(let error):
                 print(error)
             }
-            
         }
-        task?.resume()
-        
     }
 }
 
@@ -103,7 +87,7 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//
+        //
         let resultVC = ResultViewController(item: items[indexPath.row])
         navigationController?.pushViewController(resultVC, animated: true)
         

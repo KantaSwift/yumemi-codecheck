@@ -15,12 +15,14 @@ class ResultViewController: UIViewController {
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
+    
     private let titleLabel = InfoLabel(size: 20, weight: .heavy)
     private let languageLabel = InfoLabel(size: 18, weight: .bold)
     private let starsLabel = InfoLabel(size: 14, weight: .regular)
     private let watchersLabel = InfoLabel(size: 14, weight: .regular)
     private let forksLabel = InfoLabel(size: 14, weight: .regular)
     private let issuesLabel = InfoLabel(size: 14, weight: .regular)
+    private var imageGetter = ImageGetter()
     private let item: Repository.Item
     
     init(item: Repository.Item ) {
@@ -48,7 +50,7 @@ class ResultViewController: UIViewController {
         forksLabel.text = "\(item.forksCount) forks"
         issuesLabel.text = "\(item.openIssuesCount) open issues"
         
-        getImage()
+        setImage()
         setupView()
         
     }
@@ -78,31 +80,18 @@ class ResultViewController: UIViewController {
         
     }
     
-    func getImage() {
+    func setImage() {
         
-        titleLabel.text = item.fullName
-        
-        let imageURL = item.owner.avatarUrl
-        
-        guard  let url = URL(string: imageURL) else {
-            print("error")
-            return
-        }
-        
-        let task = URLSession.shared.dataTask(with: url) { (data, response, _) in
-            
-            guard let data = data else {
-                print("data is nil")
-                return
-            }
-            
-            let image = UIImage(data: data)
-            
-            DispatchQueue.main.async {
-                self.imageView.image = image
+        imageGetter.getImage(imageUrl: item.owner.avatarUrl) { [weak self] result in
+            switch result {
+            case .success(let image):
+                DispatchQueue.main.async {
+                    self?.imageView.image = image
+                }
+            case .failure(let error):
+                print(error)
             }
         }
-        
-        task.resume()
     }
+    
 }
